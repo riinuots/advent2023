@@ -1,10 +1,7 @@
 library(tidyverse)
-library(scales)
 library(words2number)
-theme_set(theme_bw())
 
 # Part I
-
 input_orig = read_csv("solutions/day01/input", col_names = "values") %>% 
   rowid_to_column()
 
@@ -19,7 +16,6 @@ input_orig %>%
 
 
 # Part II
-
 rev_string = function(string){
   paste0(rev(str_split_1(string, "")), collapse = "")
 }
@@ -44,4 +40,3 @@ input_orig %>%
             calib = paste0(value, collapse = "") %>% 
               parse_number()) %>% 
   summarise(sum(calib))
-  
