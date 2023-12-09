@@ -1,6 +1,4 @@
 library(tidyverse)
-library(scales)
-theme_set(theme_bw())
 
 report = read_lines("solutions/day09/input") %>% 
   map(~str_split_1(.x, " ") %>% parse_number())
