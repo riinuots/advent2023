@@ -11,7 +11,7 @@ map = read_delim("solutions/day08/input", skip = 2, delim = " = ", col_names = c
   separate_longer_delim(c(to, dir), delim = ", ")
 
 # Part I
-loc = "DNA"
+loc = "AAA"
 n = 0
 tic()
 for (instr in rep(instr_input, 1e6)){
