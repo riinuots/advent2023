@@ -31,6 +31,7 @@ myplot = function(m){
   bind_rows(
     which(m == "O", arr.ind = TRUE) |> as_tibble() |> mutate(type = "O"), 
     which(m == "#", arr.ind = TRUE) |> as_tibble() |> mutate(type = "#"),
+    # N E S W are for debugging
     which(m == "N", arr.ind = TRUE) |> as_tibble() |> mutate(type = "N"),
     which(m == "E", arr.ind = TRUE) |> as_tibble() |> mutate(type = "E"),
     which(m == "S", arr.ind = TRUE) |> as_tibble() |> mutate(type = "S"),
