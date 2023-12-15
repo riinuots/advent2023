@@ -3,8 +3,8 @@ library(animation)
 library(tictoc)
 theme_set(theme_bw())
 
-cols = read_lines("solutions/day14/input", n_max = 1) %>% str_count("")
-input_orig = read.fwf("solutions/day14/input", width = rep(1, cols), comment.char = "")
+cols = read_lines("solutions/day14/input-test", n_max = 1) %>% str_count("")
+input_orig = read.fwf("solutions/day14/input-test", width = rep(1, cols), comment.char = "")
 
 m = as.matrix(input_orig)[nrow(input_orig):1, ] # reverse rows
 m_orig = m
@@ -47,10 +47,8 @@ turn = function(m){
   apply(t(m), 2, rev)
 }
 
-m = m_orig
-cycle = 0
-m_list = list(m_orig)
-do_cycles = function(m, m_list, n_cycles){
+do_cycles = function(m, n_cycles){
+  m_list = list(m)
   while (TRUE){
     cycle = cycle + 1
     if(cycle %% 1 == 0){print(paste("cycle:", cycle))}
@@ -78,10 +76,6 @@ do_cycles = function(m, m_list, n_cycles){
         }
       }
     }
-    # if (map(m_list, ~all(.x == m)) |> unlist() |> any()){
-    #   print(cycle)
-    #   return(cycle)
-    # }
     m_list = append(m_list, list(m))
     if (cycle == n_cycles){
       return(m_list)
@@ -92,8 +86,7 @@ do_cycles = function(m, m_list, n_cycles){
 
 m = m_orig
 cycle = 0
-m_list_orig = list(m_orig)
-m_list = do_cycles(m, m_list_orig, 200)
+m_list = do_cycles(m, 200)
 
 phases = tibble(id = map(m_list, ~unlist(.x) |> paste0(collapse = ""))) |> 
   unnest(id) |> 
