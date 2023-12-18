@@ -2,30 +2,31 @@ library(tidyverse)
 library(sf)
 theme_set(theme_bw())
 
-input_orig = read_delim("solutions/day18/input-test", delim = " ", col_names = c("dir", "n", "colour"))
+input_orig = read_delim("solutions/day18/input", delim = " ", col_names = c("dir", "n", "colour"))
 
 # Part I
 waypoints = input_orig |> 
   mutate(x = accumulate2(n, case_match(dir,
-                                        "R" ~  0,
-                                        "U" ~ -1,
-                                        "D" ~  1,
-                                        "L" ~  0),
-                          ~(..1 + ..2*..3), .init = 1) |> head(-1),
+                                       "R" ~  0,
+                                       "U" ~ -1,
+                                       "D" ~  1,
+                                       "L" ~  0),
+                         ~(..1 + ..2*..3), .init = 1) |> head(-1),
          y = accumulate2(n, case_match(dir,
-                                        "R" ~  1,
-                                        "U" ~  0,
-                                        "D" ~  0,
-                                        "L" ~ -1),
-                          ~(..1 + ..2*..3), .init = 1) |> head(-1))
+                                       "R" ~  1,
+                                       "U" ~  0,
+                                       "D" ~  0,
+                                       "L" ~ -1),
+                         ~(..1 + ..2*..3), .init = 1) |> head(-1))
 
 
 poly = st_polygon(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
-plot(poly)
-# wrong area:
-st_area(poly) # not sure what this area value is about. Not right.
 
-# right area (create a bunch of points and get their intersection with the loop:
+# wrong answer:
+st_area(poly) # this is the inside area only without the trench itself
+
+
+# create a bunch of points and get their intersection with the trench:
 st_as_sf(crossing(x = min(waypoints$x):max(waypoints$x), y = min(waypoints$y):max(waypoints$y)), coords = c("x", "y")) |> 
   st_intersects(poly, sparse = FALSE) |> 
   sum()
@@ -48,25 +49,13 @@ waypoints = input_orig |>
                                        "2" ~ -1),
                          ~(..1 + ..2*..3), .init = 1) |> head(-1))
 
-poly = st_polygon(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
-st_area(poly) |> as.character()
+# the intersection solution no longer works as the area is too big,
+# so had to figure out how to add the trench to the inside area
 
-# right area (create a bunch of points and get their intersection with the loop:
-st_as_sf(crossing(x = min(waypoints$x):max(waypoints$x), y = min(waypoints$y):max(waypoints$y)), coords = c("x", "y")) |> 
-  st_intersects(poly, sparse = FALSE) |> 
-  sum()
+interior = st_polygon(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
+trench   = st_multilinestring(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
 
-# Plotting 
-path = waypoints |>  
-  mutate(x1 = lead(x, default = first(x)),
-         y1 = lead(y, default = first(y))) |> 
-  rowwise() |> 
-  mutate(path_x = list(x:x1),
-         path_y = list(y:y1)) |> 
-  unnest(path_x) |> 
-  unnest(path_y)
 
-path |> 
-  ggplot(aes(path_y, path_x)) +
-  geom_point(shape = "#", size = 10) +
-  geom_point(data = crossing(x = 1:10, y = 1:10), aes(x, y))
+as.character(
+  st_area(interior) + st_length(trench)/2 + 1 # trial and error
+)
