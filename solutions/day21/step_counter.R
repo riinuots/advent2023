@@ -1,7 +1,5 @@
 library(tidyverse)
 library(igraph)
-library(tictoc)
-theme_set(theme_bw())
 
 cols = read_lines("solutions/day21/input", n_max = 1) %>% str_count("")
 input_orig = read.fwf("solutions/day21/input", width = rep(1, cols), comment.char = "")
