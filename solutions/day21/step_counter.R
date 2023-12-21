@@ -24,12 +24,12 @@ map = plots %>%
   filter(id_nb %in% plots$id) |> 
   filter(id != id_nb)
 
-
 g = map |> 
   select(id, id_nb) |> 
   graph_from_data_frame()
-d = distances(g)[start, ]
 
+# Part I
+d = distances(g)[start, ]
 tibble(to = names(d),
        d = d) |> 
   filter(d %% 2 == 0) |> # can step back and forth
