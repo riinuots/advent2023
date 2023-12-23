@@ -52,9 +52,10 @@ waypoints = input_orig |>
 # the intersection solution no longer works as the area is too big,
 # so had to figure out how to add the trench to the inside area
 
+tictoc::tic()
 interior = st_polygon(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
 trench   = st_multilinestring(list(cbind(x = c(waypoints$x, 1), y = c(waypoints$y, 1))))
-
+tictoc::toc()
 
 as.character(
   st_area(interior) + st_length(trench)/2 + 1 # trial and error
