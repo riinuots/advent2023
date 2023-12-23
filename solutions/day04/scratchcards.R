@@ -1,6 +1,6 @@
 library(tidyverse)
 
-input_orig = read_delim("solutions/day04/input", delim = "|", col_names = c("winning", "yours")) %>% 
+input_orig = read_delim("solutions/day04/input-test", delim = "|", col_names = c("winning", "yours")) %>% 
   separate(winning, into = c("card", "winning"), sep = ":")
 
 # Part I
@@ -16,9 +16,21 @@ cards %>%
   summarise(sum(score))
 
 # Part II - incomplete
-yields = cards %>% 
+cards = cards %>% 
   mutate(card_n = parse_number(card)) %>% 
   rowwise() %>% 
-  mutate(get_cards = list(card_n:(card_n+n))) %>% 
-  select(card_n, get_cards) %>% 
-  add_row(card_n = 0, get_cards = list(0))
+  mutate(get_cards = if_else(n == 0, list(NULL), list(card_n + 1:n)))
+
+
+yields = pull(cards, get_cards)
+cardlist = pull(cards, card_n)
+i = 1
+while (TRUE){
+  cardlist = c(cardlist, yields[[cardlist[i]]])
+  #print(cardlist)
+  i = i + 1
+  if (i == length(cardlist)){
+    print(i)
+    break
+  }
+}
