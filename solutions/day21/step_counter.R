@@ -14,7 +14,7 @@ plots = which(m == "." | m == "S", arr.ind = TRUE) |>
   mutate(id = paste(x, y, sep = "-"))
 
 neigbhours = tidyr::crossing(dy = -1:1, dx = -1:1) |> 
-  filter(! (abs(dy) + abs(dx)) == 2)  # no diagnal steps!
+  filter(! (abs(dy) + abs(dx)) == 2)  # no diagonal steps!
 
 map = plots %>% 
   tidyr::crossing(neigbhours) %>% 
